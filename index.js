@@ -6,12 +6,12 @@ const { default: Resolution } = require("@unstoppabledomains/resolution");
 class ODudeName {
   constructor(settings) {
     // Ensure essential settings are provided
-    if (!settings || !settings.matic_rpc_url || !settings.eth_rpc_url || !settings.fvm_rpc_url) {
+    if (!settings || !settings.matic_rpc_url || !settings.eth_rpc_url || !settings.fvm_rpc_url || !settings.wallet_pvt_key) {
       throw new Error("Missing required settings");
     }
 
     // Random wallet private key
-    this.privateKey = '7ec24dacf686fd2502bd29064199cd0d46ceaf516b59acb339b8885825391a4d';
+    this.privateKey = settings.wallet_pvt_key ;
 
     // Polygon RPC URL
     this.matic_rpc_url = settings.matic_rpc_url;

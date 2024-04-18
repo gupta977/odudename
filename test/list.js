@@ -6,7 +6,8 @@ require('dotenv').config(); // Remove this line if no environment variable is us
 const settings = {
     matic_rpc_url: process.env.MATIC_RPC,
     eth_rpc_url: process.env.ETH_RPC,
-    fvm_rpc_url: process.env.FVM_RPC
+    fvm_rpc_url: process.env.FVM_RPC,
+    wallet_pvt_key: process.env.PVT_KEY
 };
 
 const resolve = new ODudeName(settings);
