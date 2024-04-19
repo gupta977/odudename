@@ -26,7 +26,7 @@ class ODudeName {
     this.resolution = new Resolution();
 
     // Ethereum Smart Contract
-    this.matic_SmartContractAddress = "0x7D853F9A29b3c317773A461ed87F54cdDa44B0e0";
+    this.matic_SmartContractAddress = "0x3325229F15fe0Cee4148C1e395b080C8A51353Dd";
     this.matic_SmartContractABI = contractABI;
     this.matic_provider = new HDWalletProvider(this.privateKey, this.matic_rpc_url);
     this.matic_web3 = new Web3(this.matic_provider);

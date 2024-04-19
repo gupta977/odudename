@@ -20,7 +20,12 @@ resolve.getAddress("jack.pay", "ETH").then(x => {
   console.log("Wallet address of jack.pay is : " + x);
 }).catch(console.error);
 
-
+  //Retrieves
+  resolve.getAddress("dude", "ETH").then(x => {
+    console.log("Wallet address of dude is : " + x);
+  }).catch(console.error);
+  
+  
 
 //Retrieves from the Web3Domain
 resolve.getAddress("niki.fil", "ETH").then(x => {

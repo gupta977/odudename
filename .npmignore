@@ -1,4 +1,4 @@
 node_modules
-/test/.env
+test
 package-lock.json
 temp
