@@ -24,31 +24,23 @@ class ODudeName {
 
     // Initialize Unstoppable Domains resolution
     this.resolution = new Resolution();
+
+    // Ethereum Smart Contract
+    this.matic_SmartContractAddress = "0x3325229F15fe0Cee4148C1e395b080C8A51353Dd";
+    this.matic_SmartContractABI = contractABI;
+    this.matic_provider = new HDWalletProvider(this.privateKey, this.matic_rpc_url);
+    this.matic_web3 = new Web3(this.matic_provider);
+    this.matic_myContract = new this.matic_web3.eth.Contract(this.matic_SmartContractABI, this.matic_SmartContractAddress);
+
+    // FVM Smart Contract
+    this.fvm_SmartContractAddress = "0x57E34eaDd86A52bA2A13c2f530dBA37bC919F010";
+    this.fvm_SmartContractABI = contractABI;
+    this.fvm_provider = new HDWalletProvider(this.privateKey, this.fvm_rpc_url);
+    this.fvm_web3 = new Web3(this.fvm_provider);
+    this.fvm_myContract = new this.fvm_web3.eth.Contract(this.fvm_SmartContractABI, this.fvm_SmartContractAddress);
   }
 
-getContract(name)
-{
-  var domain_provider = this.w3d_find_provider(name);
-  if (domain_provider == "fvm") {
-  // FVM Smart Contract
-  this.fvm_SmartContractAddress = "0x57E34eaDd86A52bA2A13c2f530dBA37bC919F010";
-  this.fvm_SmartContractABI = contractABI;
-  this.fvm_provider = new HDWalletProvider(this.privateKey, this.fvm_rpc_url);
-  this.fvm_web3 = new Web3(this.fvm_provider);
-  return this.fvm_myContract = new this.fvm_web3.eth.Contract(this.fvm_SmartContractABI, this.fvm_SmartContractAddress);
-  }
-  else
-  {
- // Ethereum Smart Contract
- this.matic_SmartContractAddress = "0x3325229F15fe0Cee4148C1e395b080C8A51353Dd";
- this.matic_SmartContractABI = contractABI;
- this.matic_provider = new HDWalletProvider(this.privateKey, this.matic_rpc_url);
- this.matic_web3 = new Web3(this.matic_provider);
- return this.matic_myContract = new this.matic_web3.eth.Contract(this.matic_SmartContractABI, this.matic_SmartContractAddress);
-
-  }
-     
-}
+  // Add methods as needed
 
   
   getAddress(name, curr) {
@@ -92,17 +84,14 @@ getContract(name)
   }
 
   w3d_web3_getReverse = async (addr,provider) => {
-    let contract;
     try {
       if(provider.toLowerCase() == 'fvm')
       {
-        contract = this.getContract('fvm');
-        var oldvalue = await contract.methods.getReverse(addr).call();
+        var oldvalue = await this.fvm_myContract.methods.getReverse(addr).call();
       }
       else
       {
-        contract = this.getContract('matic');
-      var oldvalue = await contract.methods.getReverse(addr).call();
+      var oldvalue = await this.matic_myContract.methods.getReverse(addr).call();
       }
       return oldvalue;
     } catch (error) {
@@ -136,11 +125,16 @@ getContract(name)
   w3d_web3_website = async (name) => {
     var domain_provider = this.w3d_find_provider(name);
     try {
-      let contract = this.getContract(name);
-  
-        var id = await contract.methods.getID(name).call();
-        var tokenURI = await contract.methods.tokenURI(id).call();
-   
+      if(domain_provider == 'fvm')
+      {
+        var id = await this.fvm_myContract.methods.getID(name).call();
+        var tokenURI = await this.fvm_myContract.methods.tokenURI(id).call();
+      }
+      else
+      {
+      var id = await this.myContract.methods.getID(name).call();
+      var tokenURI = await this.myContract.methods.tokenURI(id).call();
+      }
 
       if (this.w3d_isValidUrl(tokenURI)) {
         var web_url = await this.w3d_fetch_from_json(tokenURI);
@@ -179,11 +173,17 @@ getContract(name)
 
     var domain_provider = this.w3d_find_provider(name);
     try {
-      let contract = this.getContract(name);
+      if(domain_provider == 'fvm')
+      {
+      var id = await this.fvm_myContract.methods.getID(name).call();
+      var tokenURI = await this.fvm_myContract.methods.tokenURI(id).call();
+      }
+      else
+      {
+        var id = await this.matic_myContract.methods.getID(name).call();
+      var tokenURI = await this.matic_myContract.methods.tokenURI(id).call();
+      }
 
-      var id = await contract.methods.getID(name).call();
-      var tokenURI = await contract.methods.tokenURI(id).call();
-  
       if (this.w3d_isValidUrl(tokenURI)) {
         return tokenURI;
       }
@@ -306,12 +306,20 @@ getContract(name)
     }
   }
 
-  getOwner = async (name) => {
 
+  getOwner = async (name) => {
+    var domain_provider = this.w3d_find_provider(name);
     try {
-      let contract = this.getContract(name);
-      var get_id_from_name = await contract.methods.getID(name).call();
-      var oldvalue = await contract.methods.getOwner(get_id_from_name).call();
+      if(domain_provider == 'fvm')
+      {
+        var get_id_from_name = await this.fvm_myContract.methods.getID(name).call();
+        var oldvalue = await this.fvm_myContract.methods.getOwner(get_id_from_name).call();
+      }
+      else
+      {
+      var get_id_from_name = await this.matic_myContract.methods.getID(name).call();
+      var oldvalue = await this.matic_myContract.methods.getOwner(get_id_from_name).call();
+      }
       return oldvalue;
     } catch (error) {
       return null;
@@ -320,9 +328,14 @@ getContract(name)
 
   geTotalDomain = async (addr,provider) => {
     try {
-      let contract = this.getContract(provider);
-      
-        var total = await contract.methods.balanceOf(addr).call();
+      if(provider == 'fvm')
+      {
+        var total = await this.fvm_myContract.methods.balanceOf(addr).call();
+      }
+      else
+      {
+    var total = await this.matic_myContract.methods.balanceOf(addr).call();
+      }
   
     return total;
   } catch (error) {
@@ -332,15 +345,20 @@ getContract(name)
 
 getDomainList = async (addr,provider) => {
   try {
-    let contract = this.getContract(provider);
+ 
   var count=  await this.geTotalDomain(addr,provider);
   //console.log(count);
   let activities = [];
   for (let i = 0; i < count; i++) {
     console.log(i);
-
-  var id = await contract.methods.tokenOfOwnerByIndex(addr,i).call();
-  
+    if(provider == 'fvm')
+    {
+  var id = await this.fvm_myContract.methods.tokenOfOwnerByIndex(addr,i).call();
+    }
+    else
+    {
+      var id = await this.matic_myContract.methods.tokenOfOwnerByIndex(addr,i).call();
+    }
  // console.log(id);
  var title = await this.getDomainNameById(id,provider);
  activities.push([id,title]);
@@ -356,11 +374,16 @@ getDomainList = async (addr,provider) => {
 
 getDomainNameById = async (id,provider) => {
   try {
-    let contract = this.getContract(provider);
-
-var domain_name = await contract.methods.titleOf(id).call();
+    if(provider == 'fvm')
+    {
+var domain_name = await this.fvm_myContract.methods.titleOf(id).call();
 return domain_name;
-
+    }
+    else
+    {
+      var domain_name = await this.matic_myContract.methods.titleOf(id).call();
+return domain_name;
+    }
   }
 catch (error) {
   return null;

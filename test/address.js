@@ -1,6 +1,6 @@
 // address.js
 
-const ODudeName = require("../index"); // Assuming index.js is in the root of your package directory
+const ODudeName = require("../index_old"); // Assuming index.js is in the root of your package directory
 require('dotenv').config(); // Remove this line if no environment variable is used
 
 const settings = {

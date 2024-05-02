@@ -12,8 +12,8 @@ const settings = {
 
 const resolve = new ODudeName(settings);
 
-resolve.geTotalDomain("0x8D714B10B719c65B878F2Ed1436A964E11fA3271",'fvm').then(x => {
-    console.log("Total Number of Domain on FVM: " + x);
+resolve.geTotalDomain("0x8D714B10B719c65B878F2Ed1436A964E11fA3271",'matic').then(x => {
+    console.log("Total Number of Domain on Matic: " + x);
 }).catch(console.error);
 
                            
@@ -21,6 +21,6 @@ resolve.getDomainList("0x8D714B10B719c65B878F2Ed1436A964E11fA3271",'fvm').then(x
     console.log("Total Array of current FVM address  : " + x);
 }).catch(console.error);
 
-resolve.getDomainNameById('5').then(x => {
-    console.log("Domain Name of ID 5 on polygon network: " + x);
+resolve.getDomainNameById('1','matic').then(x => {
+    console.log("Domain Name of ID 1 on polygon network: " + x);
 }).catch(console.error);
